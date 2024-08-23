@@ -3,6 +3,8 @@ package hellojpa;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Orders {
@@ -16,6 +18,9 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "orders")
+    private List<OrderItem> orders = new ArrayList<OrderItem>();
 
     public Orders() {
     }
