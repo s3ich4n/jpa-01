@@ -1,5 +1,7 @@
 package hellojpa;
 
+import hellojpa.domain.Member;
+import hellojpa.domain.Orders;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
