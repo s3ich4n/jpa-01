@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Orders {
-    @Id
+@Table(name="orders")
+public class Order {
+    @Id @GeneratedValue
+    @Column(name = "order_id")
     private Long orderId;
 
     private LocalDate orderDate;
@@ -19,13 +21,16 @@ public class Orders {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "orders")
-    private List<OrderItem> orders = new ArrayList<OrderItem>();
+    // 이건 가치있을 것으로 판단
+    //      "주문"을 중심으로 실제 "주문물품"을 가질 필요가 있으면
+    //      필요하다는 생각때문. 이 "왜?"를 도출하는 과정을 잘 따라가라
+    @OneToMany(mappedBy = "order")
+    private List<OrderItem> orderItems = new ArrayList<OrderItem>();
 
-    public Orders() {
+    public Order() {
     }
 
-    public Orders(Long orderId, LocalDate orderDate, String status) {
+    public Order(Long orderId, LocalDate orderDate, String status) {
         this.orderId = orderId;
         this.orderDate = orderDate;
         this.status = status;
@@ -61,5 +66,9 @@ public class Orders {
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        this.orderItems.add(orderItem);
     }
 }

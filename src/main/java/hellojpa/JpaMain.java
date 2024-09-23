@@ -1,7 +1,8 @@
 package hellojpa;
 
 import hellojpa.domain.Member;
-import hellojpa.domain.Orders;
+import hellojpa.domain.Order;
+import hellojpa.domain.OrderItem;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -20,15 +21,13 @@ public class JpaMain {
 
         try {
             LocalDate currentTime = LocalDate.now();
-            Orders order1 = new Orders(100L, currentTime, "COMPLETED");
+
+            // 단방향으로도 개발할 수는 있다. 다만,
+            //      "연관관계의 주인이 아닌 객체는 조회만 할 수 있다" 라는 점을 확인하시오
+            Order order1 = new Order(100L, currentTime, "COMPLETED");
+            order1.addOrderItem(new OrderItem());
+
             em.persist(order1);
-            Orders order2 = new Orders(101L, currentTime, "COMPLETED");
-            em.persist(order2);
-
-            Member member = new Member(1L, "s3ich4n", "Seoul", "sangdo-ro", 07040);
-            member.addOrders(order1, order2);
-
-            em.persist(member);
 
             tx.commit();
 

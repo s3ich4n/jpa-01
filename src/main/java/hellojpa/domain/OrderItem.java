@@ -6,15 +6,16 @@ import java.math.BigDecimal;
 
 @Entity
 public class OrderItem {
-    @Id
+    @Id @GeneratedValue
+    @Column(name = "order_item_id")
     private Long orderItemId;
 
     @ManyToOne
-    @JoinColumn(name = "orders")
-    private Orders orders;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "orderItems")
+    @JoinColumn(name = "item_id")
     private Item items;
 
     private BigDecimal orderPrice;
