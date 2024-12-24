@@ -1,11 +1,7 @@
 package hellojpa;
 
-import hellojpa.domain.Member;
-import hellojpa.domain.Order;
-import hellojpa.domain.OrderItem;
+import hellojpa.domain.Movie;
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
 
 public class JpaMain {
 
@@ -20,14 +16,19 @@ public class JpaMain {
         tx.begin();
 
         try {
-            LocalDate currentTime = LocalDate.now();
 
-            // 단방향으로도 개발할 수는 있다. 다만,
-            //      "연관관계의 주인이 아닌 객체는 조회만 할 수 있다" 라는 점을 확인하시오
-            Order order1 = new Order(100L, currentTime, "COMPLETED");
-            order1.addOrderItem(new OrderItem());
+            Movie movie = new Movie();
+            movie.setDirector("aaaa");
+            movie.setActor("bbbb");
+            movie.setName("영화내용1");
+            movie.setPrice(10000);
 
-            em.persist(order1);
+            em.persist(movie);
+            em.flush();
+            em.clear();
+
+            Movie findMovie = em.find(Movie.class, movie.getId());
+            System.out.println(findMovie);
 
             tx.commit();
 
