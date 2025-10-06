@@ -1,9 +1,6 @@
 package hellojpa;
 
-import hellojpa.domain.Member;
-import hellojpa.domain.MemberDTO;
-import hellojpa.domain.Movie;
-import hellojpa.domain.Team;
+import hellojpa.domain.*;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -33,6 +30,7 @@ public class JpaMain {
             Member member = new Member();
             member.setUsername("member");
             member.setAge(10);
+            member.setMemberType(MemberType.ADMIN);
 
             member.setTeam(team);
 
@@ -41,10 +39,15 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "select m from Member m, Team t where m.username = t.name";
-            List<Member> result = em.createQuery(query, Member.class).getResultList();
+            String query = "select m.username, 'HELLO', true from Member m " +
+                            "where m.memberType = :memberType";
+            List<Object[]> result = em.createQuery(query)
+                    .setParameter("memberType", MemberType.ADMIN)
+                    .getResultList();
 
-            System.out.println("result: " + result.size());
+            for (Object[] row : result) {
+                System.out.println(row[0] + " " + row[1] + " " + row[2]);
+            }
 
             tx.commit();
 

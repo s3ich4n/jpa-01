@@ -18,6 +18,18 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
+    // 기본이 ordinal이라 string을 해줘야 생각하는 의미대로 된다
+    @Enumerated(EnumType.STRING)
+    private MemberType memberType;
+
+    public MemberType getMemberType() {
+        return memberType;
+    }
+
+    public void setMemberType(MemberType memberType) {
+        this.memberType = memberType;
+    }
+
     public void changeTeam(Team team) {
         this.team = team;
         team.getMembers().add(this);
