@@ -2,8 +2,10 @@ package hellojpa.domain;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn
 public abstract class Item {
     @Id @GeneratedValue
@@ -11,6 +13,18 @@ public abstract class Item {
 
     private String name;
     private int price;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return price == item.price && Objects.equals(id, item.id) && Objects.equals(name, item.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price);
+    }
 
     public Long getId() {
         return id;

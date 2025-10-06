@@ -1,7 +1,13 @@
 package hellojpa;
 
+import hellojpa.domain.Member;
 import hellojpa.domain.Movie;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
+import java.util.List;
 
 public class JpaMain {
 
@@ -17,20 +23,13 @@ public class JpaMain {
 
         try {
 
-            Movie movie = new Movie();
-            movie.setDirector("aaaa");
-            movie.setActor("bbbb");
-            movie.setName("영화내용1");
-            movie.setPrice(10000);
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Member> query = cb.createQuery(Member.class);
 
-            em.persist(movie);
-            em.flush();
-            em.clear();
+            Root<Member> m = query.from(Member.class);
+            query.select(m).where(cb.equal(m.get("username"), "kim"));
 
-            Movie findMovie = em.find(Movie.class, movie.getId());
-            System.out.println(findMovie);
-
-            tx.commit();
+            List<Member> members = em.createQuery(query).getResultList();
 
         } catch (Exception e) {
             tx.rollback();
