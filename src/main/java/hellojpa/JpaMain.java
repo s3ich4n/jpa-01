@@ -23,13 +23,23 @@ public class JpaMain {
 
         try {
 
-            CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<Member> query = cb.createQuery(Member.class);
+            Member member = new Member();
+            member.setUsername("memberA");
+            member.setAge(10);
+            em.persist(member);
 
-            Root<Member> m = query.from(Member.class);
-            query.select(m).where(cb.equal(m.get("username"), "kim"));
+            em.flush();
+            em.clear();
 
-            List<Member> members = em.createQuery(query).getResultList();
+            // 새로 jpql로 쿼리해서 영속성 컨텍스트에서 관리된다
+            // raw query 쓰듯 매우 잘 관리하는게 좋다.
+            List<Member> result = em.createQuery("select m from Member m", Member.class)
+                    .getResultList();
+
+            Member findMember = result.get(0);
+            findMember.setAge(20);
+
+            tx.commit();
 
         } catch (Exception e) {
             tx.rollback();

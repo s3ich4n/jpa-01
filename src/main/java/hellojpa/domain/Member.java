@@ -14,6 +14,17 @@ public class Member extends BaseEntity {
     @Column(name = "USER_NAME")
     private String username;
 
+    @Column(name = "USER_AGE")
+    private int age;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public Long getId() {
         return id;
     }
