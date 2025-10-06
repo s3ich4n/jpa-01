@@ -28,7 +28,7 @@ public class JpaMain {
             em.persist(team);
 
             Member member = new Member();
-            member.setUsername(null);
+            member.setUsername("관리자");
             member.setAge(10);
             member.setMemberType(MemberType.ADMIN);
 
@@ -39,9 +39,9 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            // "" 같은 빈 문자열은 있다고 본다. null을 줘야 진짜 null을 넣는거다.
+            // coalesce의 반대급부의 느낌
             String query =
-                    "select coalesce(m.username, '이름없는 회원') " +
+                    "select nullif(m.username, '관리자') " +
                     "from Member m";
 
             em.createQuery(query, String.class).getResultList().forEach(System.out::println);
