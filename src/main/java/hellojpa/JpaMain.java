@@ -3,6 +3,7 @@ package hellojpa;
 import hellojpa.domain.Member;
 import hellojpa.domain.MemberDTO;
 import hellojpa.domain.Movie;
+import hellojpa.domain.Team;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -24,26 +25,26 @@ public class JpaMain {
 
         try {
 
-            for (int i = 0; i < 100; i++) {
-                Member member = new Member();
-                member.setUsername("member" + i);
-                member.setAge(i);
-                em.persist(member);
-            }
+
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            Member member = new Member();
+            member.setUsername("member");
+            member.setAge(10);
+
+            member.setTeam(team);
+
+            em.persist(member);
 
             em.flush();
             em.clear();
 
-            // 내가 가지고오려는 객체의 toString에 양방향이 되면 문제 발생
-            List<Member> result = em.createQuery("select m from Member m order by m.age desc", Member.class)
-                    .setFirstResult(1)
-                    .setMaxResults(10)
-                    .getResultList();
+            String query = "select m from Member m, Team t where m.username = t.name";
+            List<Member> result = em.createQuery(query, Member.class).getResultList();
 
-            System.out.println("result.size = " + result.size());
-            for (Member m : result) {
-                System.out.println("m = " + m);
-            }
+            System.out.println("result: " + result.size());
 
             tx.commit();
 
