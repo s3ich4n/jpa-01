@@ -1,6 +1,7 @@
 package hellojpa;
 
 import hellojpa.domain.Member;
+import hellojpa.domain.MemberDTO;
 import hellojpa.domain.Movie;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -23,21 +24,26 @@ public class JpaMain {
 
         try {
 
-            Member member = new Member();
-            member.setUsername("memberA");
-            member.setAge(10);
-            em.persist(member);
+            for (int i = 0; i < 100; i++) {
+                Member member = new Member();
+                member.setUsername("member" + i);
+                member.setAge(i);
+                em.persist(member);
+            }
 
             em.flush();
             em.clear();
 
-            // 새로 jpql로 쿼리해서 영속성 컨텍스트에서 관리된다
-            // raw query 쓰듯 매우 잘 관리하는게 좋다.
-            List<Member> result = em.createQuery("select m from Member m", Member.class)
+            // 내가 가지고오려는 객체의 toString에 양방향이 되면 문제 발생
+            List<Member> result = em.createQuery("select m from Member m order by m.age desc", Member.class)
+                    .setFirstResult(1)
+                    .setMaxResults(10)
                     .getResultList();
 
-            Member findMember = result.get(0);
-            findMember.setAge(20);
+            System.out.println("result.size = " + result.size());
+            for (Member m : result) {
+                System.out.println("m = " + m);
+            }
 
             tx.commit();
 
