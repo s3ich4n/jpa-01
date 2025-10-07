@@ -56,12 +56,12 @@ public class JpaMain {
             int resultCount = em.createQuery("update Member m set m.age = 20")
                     .executeUpdate();
 
+            em.clear(); // 영속성 컨텍스트 초기화
+
             System.out.println("resultCount = " + resultCount);
 
-            // 근데 clear를 안하면 영속성 컨텍스트의 값이 남아있게 된다
-            System.out.println("member1 = " + member1.getAge());
-            System.out.println("member2 = " + member2.getAge());
-            System.out.println("member3 = " + member3.getAge());
+            Member findMember = em.find(Member.class, member1.getId());
+            System.out.println("findMember = " + findMember.getAge());
 
             tx.commit();
 
