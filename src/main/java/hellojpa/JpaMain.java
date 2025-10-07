@@ -6,6 +6,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 
+import java.util.Collection;
 import java.util.List;
 
 public class JpaMain {
@@ -22,29 +23,45 @@ public class JpaMain {
 
         try {
 
+            Team teamA = new Team();
+            teamA.setName("teamA");
+            em.persist(teamA);
 
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
+            Team teamB = new Team();
+            teamB.setName("teamB");
+            em.persist(teamB);
 
-            Member member = new Member();
-            member.setUsername("관리자");
-            member.setAge(10);
-            member.setMemberType(MemberType.ADMIN);
+            Member member1 = new Member();
+            member1.setUsername("회원1");
+            member1.setAge(20);
+            member1.setMemberType(MemberType.NORMAL);
+            member1.setTeam(teamA);
+            em.persist(member1);
 
-            member.setTeam(team);
+            Member member2 = new Member();
+            member2.setUsername("회원2");
+            member2.setAge(21);
+            member2.setMemberType(MemberType.NORMAL);
+            member2.setTeam(teamA);
+            em.persist(member2);
 
-            em.persist(member);
+            Member member3 = new Member();
+            member3.setUsername("회원3");
+            member3.setAge(21);
+            member3.setMemberType(MemberType.NORMAL);
+            member3.setTeam(teamB);
+            em.persist(member3);
 
             em.flush();
             em.clear();
 
-            // coalesce의 반대급부의 느낌
-            String query =
-                    "select nullif(m.username, '관리자') " +
-                    "from Member m";
+            String query = "select m from Member m join fetch m.team";
 
-            em.createQuery(query, String.class).getResultList().forEach(System.out::println);
+            List<Member> members = em.createQuery(query, Member.class).getResultList();
+
+            for (Member member : members) {
+                System.out.println("member " + member.getUsername() + " " + member.getTeam().getName());
+            }
 
             tx.commit();
 
