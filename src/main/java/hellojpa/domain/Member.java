@@ -3,6 +3,10 @@ package hellojpa.domain;
 import jakarta.persistence.*;
 
 @Entity
+@NamedQuery(
+    name = "Member.findMember",
+    query = "select m from Member m where m.username = :username"
+)
 public class Member extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
