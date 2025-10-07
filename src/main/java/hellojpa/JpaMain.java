@@ -55,13 +55,11 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "select t from Team t join fetch t.members";
+            String query = "select t from Team t";
 
-            // 메모리에 이걸 담는다고....???????
-            // WARN: HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
             List<Team> result = em.createQuery(query, Team.class)
                     .setFirstResult(0)
-                    .setMaxResults(1)
+                    .setMaxResults(2)
                     .getResultList();
 
             System.out.println("teams=" + result.size());
