@@ -47,7 +47,7 @@ public class JpaMain {
 
             Member member3 = new Member();
             member3.setUsername("회원3");
-            member3.setAge(21);
+            member3.setAge(22);
             member3.setMemberType(MemberType.NORMAL);
             member3.setTeam(teamB);
             em.persist(member3);
@@ -57,9 +57,16 @@ public class JpaMain {
 
             String query = "select t from Team t join fetch t.members";
 
-            List<Team> members = em.createQuery(query, Team.class).getResultList();
+            // 메모리에 이걸 담는다고....???????
+            // WARN: HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
+            List<Team> result = em.createQuery(query, Team.class)
+                    .setFirstResult(0)
+                    .setMaxResults(1)
+                    .getResultList();
 
-            for (Team team : members) {
+            System.out.println("teams=" + result.size());
+
+            for (Team team : result) {
                 System.out.println("team " + team.getName() + "|members=" + team.getMembers().size());
                 for (Member member : team.getMembers()) {
                     System.out.println("-> member = " + member.getUsername());
